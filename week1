@@ -1,0 +1,119 @@
+import random 
+
+#  empty board
+board = [[0, 0, 0],
+         [0, 0, 0],
+         [0, 0, 0]]
+
+#board function 
+def print_board():
+    for row in board:
+        for cell in row:
+            if cell == 1:
+                print("X", end=" ")
+            elif cell == 2:
+                print("O", end=" ")
+            else:
+                print(".", end=" ")
+        print()
+    print()
+
+#to get coord
+def get_coords(pos):
+    row = (pos - 1) // 3
+    col = (pos - 1) % 3
+    return row, col
+
+#for win
+def check_win(player):
+
+    positions = []
+    for i in range(3):
+        for j in range(3):
+            if board[i][j] == player:
+                positions.append(i * 3 + j + 1)
+
+
+    win_cases = [
+        [1, 2, 3], [4, 5, 6], [7, 8, 9],  
+        [1, 4, 7], [2, 5, 8], [3, 6, 9]   
+    ]
+
+
+    for case in win_cases:
+        if all(pos in positions for pos in case):
+            return True
+
+    return False  
+
+#for availible
+def get_available_moves():
+    moves = []
+    for i in range(3):
+        for j in range(3):
+            if board[i][j] == 0:
+                moves.append(i * 3 + j + 1)
+    return moves
+
+#user to make move
+def user_move():
+    while True:
+        try:
+            move = int(input("Enter your move (1-9): "))
+            if move < 1 or move > 9:
+                print("Invalid input. Enter a number from 1 to 9.")
+                continue
+            row, col = get_coords(move)
+            if board[row][col] == 0:
+                board[row][col] = 1
+                break
+            else:
+                print("That spot is taken.")
+        except ValueError:
+            print("Enter a valid number.")
+
+#computer to make move
+def computer_move():
+    available = get_available_moves()
+    move = random.choice(available)
+    row, col = get_coords(move)
+    board[row][col] = 2
+    print(f"Computer chose position {move}")
+
+#to play game
+def play_game():
+    print("Tic Tac Toe - You (X) vs Computer (O)")
+    print_board()
+
+    for turn in range(9):
+        if check_win(1):
+            print("You win!")
+            return
+        elif check_win(2):
+            print("Computer wins!")
+            return               
+       
+        if turn % 2 == 0:
+            user_move()
+        else:
+            computer_move()
+
+        print_board()
+
+        if check_win(1):
+            print("You win!")
+            return
+        elif check_win(2):
+            print("Computer wins!")
+            return
+
+
+
+    print("It's a draw!")
+
+
+play_game()
+
+
+
+1
